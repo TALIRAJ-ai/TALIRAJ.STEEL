@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام تاليراج لتجارة الحديد - TALIRAJ STEEL</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .sidebar { min-height: 100vh; background-color: #1e293b; color: #fff; }
+        .sidebar .nav-link { color: #cbd5e1; margin: 4px 0; border-radius: 6px; }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active { background-color: #0ea5e9; color: #fff; }
+        .card-stat { border: none; border-radius: 12px; transition: transform 0.2s; }
+        .card-stat:hover { transform: translateY(-3px); }
+        .admin-only { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- شاشة تسجيل الدخول -->
+    <div id="loginSection" class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="card p-4 shadow-lg" style="width: 380px; border-radius: 15px;">
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-cubes-stacked fa-3x text-primary mb-2"></i>
+                <h4 class="fw-bold">تاليراج لتجارة الحديد</h4>
+                <p class="text-muted small">تسجيل الدخول للنظام</p>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">اسم المستخدم</label>
+                <input type="text" id="username" class="form-control" placeholder="ادخل اسم المستخدم">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">كلمة المرور</label>
+                <input type="password" id="password" class="form-control" placeholder="••••••••">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">الصلاحية (الدور)</label>
+                <select id="roleSelect" class="form-select">
+                    <option value="admin">مدير النظام (Admin)</option>
+                    <option value="employee">موظف مبيعات (Employee)</option>
+                </select>
+            </div>
+            <button onclick="login()" class="btn btn-primary w-100 fw-bold">دخول النظام</button>
+        </div>
+    </div>
+
+    <!-- لوحة التحكم الرئيسية -->
+    <div id="appSection" class="container-fluid d-none">
+        <div class="row">
+            <!-- القائمة الجانبية -->
+            <div class="col-md-3 col-lg-2 sidebar p-3">
+                <h5 class="text-center fw-bold text-info my-3"><i class="fa-solid fa-layer-group me-2"></i>TALIRAJ STEEL</h5>
+                <hr>
+                <div class="small text-muted mb-2">المستخدم: <span id="userBadge" class="badge bg-success"></span></div>
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item"><a href="#" onclick="showTab('dashboard')" class="nav-link active"><i class="fa-solid fa-chart-pie me-2"></i>لوحة التحكم</a></li>
+                    <li><a href="#" onclick="showTab('sales')" class="nav-link"><i class="fa-solid fa-file-invoice-dollar me-2"></i>المبيعات والفواتير</a></li>
+                    <li><a href="#" onclick="showTab('inventory')" class="nav-link"><i class="fa-solid fa-warehouse me-2"></i>المخزون والمنتجات</a></li>
+                    <li><a href="#" onclick="showTab('customers')" class="nav-link"><i class="fa-solid fa-users me-2"></i>الزبائن والموردين</a></li>
+                    <li><a href="#" onclick="showTab('cash')" class="nav-link"><i class="fa-solid fa-vault me-2"></i>الصندوق والمالية</a></li>
+                    <li class="admin-only"><a href="#" onclick="showTab('reports')" class="nav-link text-warning"><i class="fa-solid fa-file-lines me-2"></i>التقارير والأرباح (مدير)</a></li>
+                </ul>
+                <hr>
+                <button onclick="logout()" class="btn btn-outline-danger w-100 btn-sm"><i class="fa-solid fa-right-from-bracket me-2"></i>تسجيل خروج</button>
+            </div>
+
+            <!-- المحتوى الرئيسي -->
+            <div class="col-md-9 col-lg-10 p-4">
+                
+                <!-- 1. لوحة التحكم -->
+                <div id="tab-dashboard" class="tab-content">
+                    <h3 class="fw-bold mb-4">لوحة التحكم والرصيد</h3>
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="card card-stat bg-primary text-white p-3">
+                                <h6>رصيد الصندوق</h6>
+                                <h3 id="statCash">$12,450</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card card-stat bg-success text-white p-3">
+                                <h6>إجمالي المبيعات</h6>
+                                <h3 id="statSales">$45,200</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card card-stat bg-warning text-dark p-3">
+                                <h6>الديون المستحقة (لنا)</h6>
+                                <h3 id="statDebts">$8,300</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-3 admin-only">
+                            <div class="card card-stat bg-dark text-white p-3">
+                                <h6>صافي الأرباح (مدير)</h6>
+                                <h3>$6,150</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. المبيعات -->
+                <div id="tab-sales" class="tab-content d-none">
+                    <h3 class="fw-bold mb-4">إنشاء فاتورة مبيعات</h3>
+                    <div class="card p-3 shadow-sm mb-4">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">الزبون</label>
+                                <input type="text" class="form-control" placeholder="اسم الزبون">
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">نوع الدفع</label>
+                                <select class="form-select"><option>نقدي</option><option>آجل (دين)</option></select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label">الصنف</label>
+                                <select class="form-select"><option>حديد برومين 12مم</option><option>حديد صاج 2مم</option></select>
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button class="btn btn-success w-100"><i class="fa-solid fa-plus me-1"></i>إضافة فاتورة</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. المخزون -->
+                <div id="tab-inventory" class="tab-content d-none">
+                    <h3 class="fw-bold mb-4">إدارة المخزون والأصناف</h3>
+                    <table class="table table-hover bg-white shadow-sm rounded">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>اسم الصنف</th>
+                                <th>الكمية المتاحة</th>
+                                <th>سعر البيع</th>
+                                <th class="admin-only">سعر الشراء (مدير)</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>حديد مبروم 12 مم (طن)</td>
+                                <td>45 طن</td>
+                                <td>$720</td>
+                                <td class="admin-only">$650</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info text-white"><i class="fa-solid fa-eye"></i></button>
+                                    <button class="btn btn-sm btn-danger admin-only"><i class="fa-solid fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUserRole = 'employee';
+
+        function login() {
+            const role = document.getElementById('roleSelect').value;
+            currentUserRole = role;
+            document.getElementById('loginSection').classList.add('d-none');
+            document.getElementById('appSection').classList.remove('d-none');
+            document.getElementById('userBadge').innerText = role === 'admin' ? 'مدير (Admin)' : 'موظف (Employee)';
+            
+            // تطبيق الصلاحيات
+            const adminElements = document.querySelectorAll('.admin-only');
+            adminElements.forEach(el => {
+                el.style.display = (role === 'admin') ? 'block' : 'none';
+            });
+        }
+
+        function logout() {
+            document.getElementById('appSection').classList.add('d-none');
+            document.getElementById('loginSection').classList.remove('d-none');
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('d-none'));
+            document.getElementById('tab-' + tabName).classList.remove('d-none');
+        }
+    </script>
+</body>
+</html>
